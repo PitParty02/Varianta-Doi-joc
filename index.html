@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golurile în timp şi spațiu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #a8d5ba; /* verde deschis */
+        }
+        .hidden { display: none; }
+        .try-again { color: red; }
+        .correct { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Golurile în timp şi spațiu</h1>
+    <button id="generate-location" onclick="initializeQuestion()">Generează locația</button>
+    <div id="hints-section" class="hidden">
+        <p>Indiciu 1: <span id="hint1"></span></p>
+        <p>Indiciu 2: <span id="hint2"></span></p>
+        <p>Indiciu 3: <span id="hint3"></span></p>
+        <input type="text" id="answer" placeholder="Introdu răspunsul corect">
+        <button onclick="checkAnswer()">Verifică răspunsul</button>
+        <div id="response-message"></div>
+    </div>
+    <input type="text" id="immunity-code" placeholder="Introdu codul punctului de imunitate">
+    <button onclick="addImmunity()">Adaugă punct de imunitate</button>
+    <div id="immunity-message"></div>
+    <p>Puncte de imunitate: <span id="immunity-points">0</span></p>
+
+    <script>
+        const questions = [
+            { hints: ["Țară vecină - Franța", "În Europa", "Faimoasă pentru ceasurile cu precizie"], answer: "Elveția", code: "ZX83D-9KLQP" },
+            { hints: ["Țară vecină - Pakistan", "În Asia", "Renumită pentru Taj Mahal"], answer: "India", code: "KY49P-T23NM" }
+        ];
+
+        let selectedQuestion = null;
+        let immunityPoints = 0;
+
+        function initializeQuestion() {
+            selectedQuestion = questions[Math.floor(Math.random() * questions.length)];
+            if (selectedQuestion) {
+                document.getElementById("hint1").innerText = selectedQuestion.hints[0];
+                document.getElementById("hint2").innerText = selectedQuestion.hints[1];
+                document.getElementById("hint3").innerText = selectedQuestion.hints[2];
+                document.getElementById("hints-section").classList.remove("hidden");
+                document.getElementById("response-message").innerText = '';
+                document.getElementById("answer").value = '';
+                console.log("Întrebare generată:", selectedQuestion);
+            } else {
+                console.error("Nu s-a generat nicio întrebare!");
+            }
+        }
+
+        function checkAnswer() {
+            const answer = document.getElementById("answer").value.trim();
+            if (answer.toLowerCase() === selectedQuestion.answer.toLowerCase()) {
+                document.getElementById("response-message").innerHTML = `<span class="correct">Răspuns corect ✅ Codul punctului de imunitate este: <strong>${selectedQuestion.code}</strong></span>`;
+            } else {
+                document.getElementById("response-message").innerHTML = "<span class='try-again'>Mai încearcă</span>";
+            }
+        }
+
+        function addImmunity() {
+            const enteredCode = document.getElementById("immunity-code").value.trim();
+            if (enteredCode === selectedQuestion.code) {
+                immunityPoints++;
+                document.getElementById("immunity-points").innerText = immunityPoints;
+                document.getElementById("immunity-message").innerHTML = "<span class='correct'>Punct de imunitate adăugat!</span>";
+                document.getElementById("immunity-code").value = '';
+            } else {
+                document.getElementById("immunity-message").innerHTML = "<span class='try-again'>Cod invalid. Încearcă din nou.</span>";
+            }
+        }
+    </script>
+</body>
+</html>
